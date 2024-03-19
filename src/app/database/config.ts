@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
+import { config } from "dotenv";
+import mongoose from "mongoose";
 
-const dbConnection = async () => {
-  const url = process.env.URL_DB;
+export const dbConnection = async () => {
+  const url: string = config().parsed?.URL_DB || "";
   try {
     await mongoose.connect(url, {
-        autoIndex: true,
+      autoIndex: true,
     });
     console.log("Base de datos online");
   } catch (error) {
@@ -12,7 +13,3 @@ const dbConnection = async () => {
     throw new Error("Error al iniciar la base de datos");
   }
 };
-
-module.exports = {
-  dbConnection,
-}
