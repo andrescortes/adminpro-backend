@@ -1,15 +1,21 @@
 import { Response, Request } from 'express';
 import bcrypt from 'bcryptjs';
 
-import { User } from '../models/user.model';
-import { IUser } from '../interfaces/user.interface';
+import { IUser } from '../interfaces';
+import { User } from '../models';
+import { generateJWT } from '../helpers';
 
 
 const getUsers = async (req: Request, res: Response) => {
+  const { uid, name } = (req as any)?.props as { uid: string, name: string };
   const users = await User.find({}, 'name email role password google');
   res.status(200).json({
     ok: true,
     users,
+    requestedBy: {
+      uid,
+      name
+    }
   });
 };
 
@@ -44,9 +50,11 @@ const createUser = async (req: Request, res: Response) => {
     )
     await newUser.save();
     console.log(newUser);
+    const token = await generateJWT(newUser.id, newUser.name);
     res.status(201).json({
       ok: true,
       user: newUser,
+      token
     });
   } catch (error: any) {
     res.status(500).json({
@@ -91,8 +99,35 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+const deleteUser = async (req: Request, res: Response) => {
+  const uid = req.params.id;
+  try {
+    const user = await User.findById(uid);
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'User not found',
+      });
+    }
+    // user.status = false;
+    // await user.save();
+    await User.findByIdAndDelete(uid);
+    res.status(200).json({
+      ok: true,
+      msg: 'User deleted',
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      msg: 'Something went wrong',
+    })
+  }
+};
+
 export {
   getUsers,
   createUser,
-  updateUser
+  updateUser,
+  deleteUser
 };

@@ -1,8 +1,11 @@
 import { config } from 'dotenv';
 import express from 'express';
 import { dbConnection } from './app/database/config';
-import { userRouter } from './app/routes/user.route';
 import cors from 'cors';
+import { 
+    authRouter, 
+    userRouter 
+} from './app/routes';
 
 dbConnection();
 
@@ -17,6 +20,7 @@ app.use(express.json());
 
 //routes
 app.use("/api/users", userRouter);
+app.use("/api/login", authRouter);
 
 //starting server
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));

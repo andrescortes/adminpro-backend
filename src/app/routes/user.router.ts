@@ -3,17 +3,27 @@
 */
 import { Router } from 'express';
 import { check } from 'express-validator';
+
 import {
     getUsers,
     createUser,
-    updateUser
-} from '../controllers/user.controller';
-import { validateFields } from '../middlewares/users/validate-field';
+    updateUser,
+    deleteUser
+} from '../controllers';
+import {
+    validateFields,
+    validateJwt
+} from '../middlewares';
 
 
 const router = Router();
 
-router.get("/", getUsers);
+router.get(
+    "/",
+    validateJwt,
+    getUsers
+);
+
 router.post(
     "/",
     [
@@ -28,12 +38,19 @@ router.post(
 router.put(
     "/:id",
     [
-    check("name", "Name is required").not().isEmpty(),
-    check("email", "Email is required").isEmail(),
-    check("role", "Role is required").not().isEmpty(),
-    validateFields
+        validateJwt,
+        check("name", "Name is required").not().isEmpty(),
+        check("email", "Email is required").isEmail(),
+        check("role", "Role is required").not().isEmpty(),
+        validateFields
     ],
     updateUser
+);
+
+router.delete(
+    "/:id",
+    validateJwt,
+    deleteUser
 );
 
 
