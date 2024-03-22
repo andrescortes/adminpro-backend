@@ -7,9 +7,9 @@ export const dbConnection = async () => {
     await mongoose.connect(url, {
       autoIndex: true,
     });
-    console.log("Base de datos online");
+    console.log("Database online...");
   } catch (error) {
     console.log(error);
-    throw new Error("Error al iniciar la base de datos");
+    throw new Error("Database error initialization");
   }
 };
