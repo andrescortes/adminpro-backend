@@ -29,7 +29,7 @@ router.post(
     [
         validateJwt,
         check("name", "Name is required").not().isEmpty(),
-        check("hospital", "Hospital is required").not().isEmpty(),
+        check("hospital", "Hospital id is required").isMongoId(),
         validateFields
     ],
     createDoctor

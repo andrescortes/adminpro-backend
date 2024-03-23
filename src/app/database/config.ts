@@ -9,7 +9,7 @@ export const dbConnection = async () => {
     });
     console.log("Database online...");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error("Database error initialization");
   }
 };

@@ -6,6 +6,8 @@ import {
     authRouter,
     doctorRouter,
     hospitalRouter,
+    todoRouter,
+    uploadRouter,
     userRouter,
 } from './app/routes';
 
@@ -25,6 +27,8 @@ app.use("/api/users", userRouter);
 app.use("/api/login", authRouter);
 app.use("/api/hospitals", hospitalRouter);
 app.use("/api/doctors", doctorRouter);
+app.use("/api/todos", todoRouter);
+app.use("/api/uploads", uploadRouter);
 
 //starting server
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));

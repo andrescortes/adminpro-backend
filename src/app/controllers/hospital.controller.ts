@@ -6,7 +6,7 @@ import { Hospital } from '../models';
 
 const getHospitals = async (req: Request, res: Response) => {
   const { uid, name } = (req as any)?.props as { uid: string, name: string };
-  const hospitals = await Hospital.find({}, 'name img user');
+  const hospitals = await Hospital.find().populate('user', 'name img');
   res.status(200).json({
     ok: true,
     hospitals,

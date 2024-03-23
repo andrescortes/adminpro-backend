@@ -6,7 +6,9 @@ import { Doctor } from '../models';
 
 const getDoctors = async (req: Request, res: Response) => {
   const { uid, name } = (req as any)?.props as { uid: string, name: string };
-  const doctors = await Doctor.find({}, 'name img user hospital');
+  const doctors = await Doctor.find()
+    .populate('user', 'name img')
+    .populate('hospital', 'name');
   res.status(200).json({
     ok: true,
     doctors,

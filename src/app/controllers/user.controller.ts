@@ -7,16 +7,26 @@ import { generateJWT } from '../helpers';
 
 
 const getUsers = async (req: Request, res: Response) => {
-  const { uid, name } = (req as any)?.props as { uid: string, name: string };
-  const users = await User.find({}, 'name email role password google');
-  res.status(200).json({
-    ok: true,
-    users,
-    requestedBy: {
-      uid,
-      name
-    }
-  });
+  const { limit = 5, from = 0 } = req.query;
+  try {
+    const [ total, users ] = await Promise.all([
+      User.countDocuments(),
+      User.find().skip(Number(from)).limit(Number(limit))
+    ]);
+
+    res.status(200).json({
+      ok: true,
+      total,
+      users
+    });
+
+  } catch (error: any) {
+    return res.status(500).json({
+      ok: false,
+      msg: 'Something went wrong',
+      error: error?.message
+    })
+  }
 };
 
 const createUser = async (req: Request, res: Response) => {
@@ -49,7 +59,6 @@ const createUser = async (req: Request, res: Response) => {
       }
     )
     await newUser.save();
-    console.log(newUser);
     const token = await generateJWT(newUser.id, newUser.name);
     res.status(201).json({
       ok: true,

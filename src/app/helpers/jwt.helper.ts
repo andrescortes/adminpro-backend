@@ -13,7 +13,7 @@ const generateJWT = (uid: string, name: string): Promise<string> => {
             { expiresIn: '12h' },
             (err, token) => {
                 if (err || !token || typeof token !== 'string') {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
                     resolve(token);
