@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Sign In</title>
+  </head>
+  <body>
+    <h1>Google Sign In</h1>
+    <div id="buttonDiv"></div>
+
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+      var url = 'http://localhost:3000/api/login/google';
+      async function handleCredentialResponse(response) {
+        const body = { token: response.credential };
+        const responseGoogle = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+        const data = await responseGoogle.json();
+        console.log({ data });
+      }
+      window.onload = async function () {
+        await google.accounts.id.initialize({
+          client_id:
+            '402618854925-b70n511r66sdt7fc1pm9m995u00cgkbt.apps.googleusercontent.com',
+          callback: handleCredentialResponse,
+        });
+        google.accounts.id.renderButton(
+          document.getElementById('buttonDiv'),
+          {
+            theme: 'outline',
+            size: 'large',
+            type: 'standard',
+            shape: 'rectangular',
+            text: 'signin_with',
+          }
+        );
+        google.accounts.id.prompt();
+      };
+    </script>
+  </body>
+</html>

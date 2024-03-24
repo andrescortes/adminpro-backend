@@ -19,6 +19,9 @@ const port = config().parsed?.PORT || 3000;
 const app = express();
 //middlewares
 app.use(cors());
+
+app.use(express.static(__dirname + '/app/public'));
+
 app.use(express.json());
 
 
