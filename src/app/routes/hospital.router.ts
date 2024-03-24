@@ -5,10 +5,10 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 
 import {
-    deleteUser,
     getHospitals,
     createHospital,
-    updateHospital
+    updateHospital,
+    deleteHospital
 } from '../controllers';
 import {
     validateFields,
@@ -39,8 +39,6 @@ router.put(
     [
         validateJwt,
         check("name", "Name is required").not().isEmpty(),
-        check("img", "Image is required").not().isEmpty(),
-        check("user", "User is required").not().isEmpty(),
         validateFields
     ],
     updateHospital
@@ -49,7 +47,7 @@ router.put(
 router.delete(
     "/:id",
     validateJwt,
-    deleteUser
+    deleteHospital
 );
 
 

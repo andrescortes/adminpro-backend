@@ -45,9 +45,23 @@ const createHospital = async (req: Request, res: Response) => {
 const updateHospital = async (req: Request, res: Response) => {
   try {
     const { uid, name } = (req as any)?.props as { uid: string, name: string };
+    const body = req.body as IHospital;
+    const hospital = await Hospital.findById(req.params.id);
+    if (!hospital) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Hospital not found',
+      });
+    }
+    const hospitalUpdated = await Hospital.findByIdAndUpdate(
+      req.params.id,
+      { ...body, user: uid },
+      { new: true }
+    );
     res.status(200).json({
       ok: true,
-      msg: 'User updated',
+      msg: 'Hospital updated',
+      hospital: hospitalUpdated,
       auditedBy: {
         uid,
         name
@@ -65,9 +79,17 @@ const deleteHospital = async (req: Request, res: Response) => {
   const uid = req.params.id;
   try {
     const hospital = await Hospital.findById(uid);
+    if (!hospital) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Hospital not found',
+      });
+    }
+
+    await Hospital.findByIdAndDelete(uid);
     res.status(200).json({
       ok: true,
-      msg: 'User deleted',
+      msg: 'Hospital deleted',
     });
 
   } catch (error) {

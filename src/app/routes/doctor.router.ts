@@ -40,8 +40,7 @@ router.put(
     [
         validateJwt,
         check("name", "Name is required").not().isEmpty(),
-        check("img", "Image is required").not().isEmpty(),
-        check("user", "User is required").not().isEmpty(),
+        check("hospital", "Hospital id is required").isMongoId(),
         validateFields
     ],
     updateDoctor

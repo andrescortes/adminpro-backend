@@ -79,7 +79,25 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+const refreshToken = async (req: Request, res: Response): Promise<void> => {
+    const { uid, name } = (req as any)?.props as { uid: string, name: string };
+    try {
+        const tokenUser = await generateJWT(uid, name);
+        res.status(200).json({
+            ok: true,
+            token: tokenUser
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Something went wrong'
+        });
+    }
+}
+
 export {
     login,
-    googleSignin
+    googleSignin,
+    refreshToken
 };

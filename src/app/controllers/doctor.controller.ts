@@ -46,10 +46,31 @@ const createDoctor = async (req: Request, res: Response) => {
 
 const updateDoctor = async (req: Request, res: Response) => {
   try {
+    const { uid, name } = (req as any)?.props as { uid: string, name: string };
+    const body = req.body as IDoctor;
+    const doctor = await Doctor.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Doctor not found',
+      });
+    }
+    const doctorUpdated = await Doctor.findByIdAndUpdate(
+      req.params.id,
+      { ...body, user: uid },
+      { new: true }
+    )
+    .populate('user', 'name img')
+    .populate('hospital', 'name img');
 
     res.status(200).json({
       ok: true,
-
+      msg: 'Doctor updated',
+      doctor: doctorUpdated,
+      auditedBy: {
+        uid,
+        name
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -61,16 +82,11 @@ const updateDoctor = async (req: Request, res: Response) => {
 
 const deleteDoctor = async (req: Request, res: Response) => {
   const uid = req.params.id;
-  const { uid: userId, name } = (req as any)?.props as { uid: string, name: string };
   try {
     await Doctor.findByIdAndDelete(uid);
     res.status(200).json({
       ok: true,
-      msg: 'User deleted',
-      auditedBy: {
-        name,
-        uid: userId
-      }
+      msg: 'Doctor deleted'
     });
 
   } catch (error) {

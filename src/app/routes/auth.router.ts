@@ -3,9 +3,14 @@
  Route: /api/login
 */
 import { Router } from 'express';
-import { googleSignin, login } from '../controllers';
 import { check } from 'express-validator';
-import { validateFields } from '../middlewares';
+
+import {
+    googleSignin,
+    login,
+    refreshToken
+} from '../controllers';
+import { validateFields, validateJwt } from '../middlewares';
 
 const router = Router();
 
@@ -28,6 +33,12 @@ router.post(
         validateFields
     ],
     googleSignin
+);
+
+router.get(
+    "/refresh",
+    validateJwt,
+    refreshToken
 );
 
 export { router as authRouter };
