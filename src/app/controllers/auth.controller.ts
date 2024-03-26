@@ -28,9 +28,8 @@ const login = async (req: Request, res: Response) => {
 
         res.status(200).json({
             ok: true,
-            uid: userDb.id,
-            name: userDb.name,
-            token
+            token,
+            user: userDb
         })
     } catch (error) {
         console.log(error);
@@ -53,12 +52,13 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
                 name,
                 email,
                 password: '@@@',
-                image: picture,
+                img: picture,
                 google: true
             });
         } else {
             userDb = user;
             userDb.google = true;
+            userDb.img = picture;
             // userDb.password = '@@@';
         }
         await userDb.save();
@@ -67,7 +67,8 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({
             ok: true,
-            token: tokenUser
+            token: tokenUser,
+            user: userDb
         });
     } catch (error: any) {
         console.log(error);
@@ -83,9 +84,17 @@ const refreshToken = async (req: Request, res: Response): Promise<void> => {
     const { uid, name } = (req as any)?.props as { uid: string, name: string };
     try {
         const tokenUser = await generateJWT(uid, name);
+        const user = await User.findById(uid);
+        if (!user) {
+            res.status(404).json({
+                ok: false,
+                msg: 'User not found'
+            });
+        }
         res.status(200).json({
             ok: true,
-            token: tokenUser
+            token: tokenUser,
+            user
         });
     } catch (error) {
         console.log(error);

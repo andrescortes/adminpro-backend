@@ -51,6 +51,7 @@ const uploadFile = async (req: Request, res: Response) => {
             });
         });
 };
+
 const getImage = async (req: Request, res: Response) => {
     const { collection, imageId } = req.params;
     const pathImage = path.join(__dirname, `../../../uploads/${collection}/${imageId}`) ?? undefined;
