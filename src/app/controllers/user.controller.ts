@@ -86,16 +86,20 @@ const updateUser = async (req: Request, res: Response) => {
 
     const { password, google, email, ...fields } = req.body as IUser;
     if (user.email !== email) {
-      const existEmail = await User.findOne({ email });
-      if (existEmail) {
+      const existEmailByUser = await User.findOne({ email });
+      if (existEmailByUser) {
         return res.status(400).json({
           ok: false,
           msg: "The email already exists",
         });
       }
     }
-
-    const userUpdated = await User.findByIdAndUpdate(uid, { ...fields, email }, { new: true });
+    let userUpdated;
+    if (user.google) {
+      userUpdated = await User.findByIdAndUpdate(uid, { ...fields }, { new: true });
+    } else {
+      userUpdated = await User.findByIdAndUpdate(uid, { ...fields, email }, { new: true });
+    }
     res.status(200).json({
       ok: true,
       user: userUpdated,
