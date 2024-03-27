@@ -14,9 +14,11 @@ const getTodo = async (req: Request, res: Response) => {
         ]);
         res.status(200).json({
             ok: true,
-            users,
-            doctors,
-            hospitals
+            data: {
+                users,
+                doctors,
+                hospitals
+            }
         });
 
     } catch (error) {
@@ -57,7 +59,7 @@ const getDocument = async (req: Request, res: Response) => {
         }
         return res.status(200).json({
             ok: true,
-            result: data
+            data
         });
     } catch (error) {
         res.status(500).json({
