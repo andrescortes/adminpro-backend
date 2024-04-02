@@ -58,8 +58,8 @@ const getImage = async (req: Request, res: Response) => {
     if (existsSync(pathImage)) {
         res.status(200).sendFile(pathImage);
     } else {
-        const pathImage = path.join(__dirname, `../../../uploads/default/no-img.jpg`);
-        res.status(404).sendFile(pathImage);
+        const pathImageAlter = path.join(__dirname, `../../../uploads/default/no-img.jpg`);
+        res.status(200).sendFile(pathImageAlter);
     }
 };
 
