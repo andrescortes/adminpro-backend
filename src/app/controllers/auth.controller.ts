@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ILogin } from '../interfaces';
 import { User } from '../models';
 import bcrypt from 'bcryptjs';
-import { generateJWT, verifyToken } from '../helpers';
+import { generateJWT, verifyToken,menuItems } from '../helpers';
 
 const login = async (req: Request, res: Response) => {
     const { email, password } = req.body as ILogin;
@@ -29,8 +29,9 @@ const login = async (req: Request, res: Response) => {
         res.status(200).json({
             ok: true,
             token,
-            user: userDb
-        })
+            user: userDb,
+            menu: menuItems(userDb.role)
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -68,7 +69,8 @@ const googleSignin = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({
             ok: true,
             token: tokenUser,
-            user: userDb
+            user: userDb,
+            menu: menuItems(userDb.role)
         });
     } catch (error: any) {
         console.log(error);
@@ -94,7 +96,8 @@ const refreshToken = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({
             ok: true,
             token: tokenUser,
-            user
+            user,
+            menu: menuItems(user!.role)
         });
     } catch (error) {
         console.log(error);

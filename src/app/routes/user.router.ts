@@ -11,6 +11,8 @@ import {
     deleteUser
 } from '../controllers';
 import {
+    validateAdminRole,
+    validateAdminRoleOrSameUser,
     validateFields,
     validateJwt
 } from '../middlewares';
@@ -27,6 +29,7 @@ router.get(
 router.post(
     "/",
     [
+        validateAdminRole,
         check("name", "Name is required").not().isEmpty(),
         check("email", "Email is required").isEmail(),
         check("password", "Password is required").not().isEmpty(),
@@ -39,6 +42,7 @@ router.put(
     "/:id",
     [
         validateJwt,
+        validateAdminRoleOrSameUser,
         check("name", "Name is required").not().isEmpty(),
         check("email", "Email is required").isEmail(),
         check("role", "Role is required").not().isEmpty(),
@@ -49,7 +53,10 @@ router.put(
 
 router.delete(
     "/:id",
-    validateJwt,
+    [
+        validateJwt,
+        validateAdminRole
+    ],
     deleteUser
 );
 
