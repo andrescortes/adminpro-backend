@@ -14,7 +14,7 @@ import {
 // connecting to mongo database
 dbConnection();
 
-const port = config().parsed?.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 //middlewares
@@ -33,5 +33,11 @@ app.use("/api/doctors", doctorRouter);
 app.use("/api/todos", todoRouter);
 app.use("/api/uploads", uploadRouter);
 
+
+app.get('*', (req, res) => {
+    res.sendFile(__dirname + '/app/public/index.html');
+});
+// create all directories for images to storage
+
 //starting server
-app.listen(port, () => console.log(`listening on http://localhost:${port}`));
+app.listen(PORT, () => console.log(`listening on http://localhost:${PORT}`));
